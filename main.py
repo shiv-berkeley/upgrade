@@ -10,7 +10,7 @@ app = Flask(__name__)
 def chat():
     print("chat")
     print("~~~~ Initiating Cohere client")
-    client = cohere.Client("NpP2ZAFKfb793OTLHQZyQESLvtwXTrgGJkbgxxlp")
+    client = cohere.Client("<YOUR KEY>")
     print("~~~~ Calling Cohere generate API")
 
     return render_template("index.html")
@@ -23,7 +23,7 @@ def index():
 @app.route("/generate", methods=["GET"])
 def root():
     print("~~~~ Initiating Cohere client")
-    client = cohere.Client("NpP2ZAFKfb793OTLHQZyQESLvtwXTrgGJkbgxxlp")
+    client = cohere.Client("<YOUR KEY>")
     print("~~~~ Calling Cohere generate API")
     response = client.generate(
     prompt=request.args.get('q'),
