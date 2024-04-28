@@ -1,0 +1,89 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    margin-top: 20px;
+    padding: 15px;
+    font-size: 16px;
+    border: 2px solid #007BFF;
+    border-radius: 8px;
+}
+
+.tabs {
+    margin-top: 20px;
+}
+
+.tab-links {
+    overflow: hidden;
+    background-color: #f1f1f1;
+    padding: 0;
+    margin: 0;
+}
+
+.tab-link {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: background-color 0.3s;
+}
+
+.tab-link:hover {
+    background-color: #ddd;
+}
+
+.tab-link.active {
+    background-color: #007BFF;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.chip {
+    display: inline-block;
+    padding: 8px;
+    background-color: #f1f1f1;
+    border-radius: 25px;
+    margin: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chip:hover {
+    background-color: #ddd;
+}
+
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}

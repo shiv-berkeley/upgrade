@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Submission Form</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+            margin: 40px auto;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+            resize: none;
+        }
+
+        button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #responseDisplay {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #responseDisplay ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .list-item {
+            padding: 8px;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .expandable-content {
+            display: none;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .upgrade-message {
+          margin-top: 20px;
+          padding: 20px;
+          text-align: center;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          background-color: #c3c163; /* Camel color */
+          color: black; /* Sets text color to white for contrast */
+        }
+        .background {
+          background-image: url('../assets/upgrade.png');
+        }
+        .header {
+            background-color: #c3c163; /* pale yellow */
+            text-align: center;
+            padding: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .hidden-div {
+          display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">Upgrade</div>
+    <textarea id="inputText" placeholder="Enter your text here..."></textarea>
+    <button id="submitButton">Submit</button>
+    <div class="upgrade-message">Upgrade your grading!</div>
+    <div id="responseDisplay" class="hidden-div">
+      <ul id="responseList"></ul>
+    </div>
+</div>
+
+<script>
+    document.getElementById('submitButton').addEventListener('click', function() {
+        var div = document.getElementById('responseDisplay');
+        div.style.display = 'block';
+
+        // logic starts here
+        console.log("enters here ------")
+        var inputText = document.getElementById('inputText').value;
+        inputText = "System: Act as a Professor of a University. Only give the response without any header text. " +
+        "Only give 10 responses unless told otherwise. Separate your response with new line. Number each of your responses. Prompt:" + inputText
+        var response;
+        // Example fetch request (adjust URL and request details as needed)
+        fetch('https://api.cohere.ai/v1/generate', {
+          method: 'POST', // or 'GET' if required by your endpoint
+          body: JSON.stringify({prompt: inputText}), // Adjust based on your endpoint's requirements
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer NpP2ZAFKfb793OTLHQZyQESLvtwXTrgGJkbgxxlp',
+          },
+          max_tokens:500,
+          temperature:0.5,
+          k:40,
+          p:0.95,
+        })
+        .then(response => response.json())
+        .then(data => {
+            // convert to a list based on a regex
+            const regex = /\d+\.\s*|\d+\)\s*/g;
+            const splitResponses = data["generations"][0]["text"].split(regex).filter(response => response.trim() !== "");
+            const cleanedResponses = splitResponses.map(response => response.trim());
+            console.log(cleanedResponses)
+            const list = document.getElementById('responseList');
+            list.innerHTML = ''; // Clear the list
+
+            cleanedResponses.forEach((item, index) => {
+              const listItem = document.createElement('li');
+              listItem.className = 'list-item';
+              listItem.textContent = item;
+              listItem.addEventListener('click', function() {
+                  toggleExpandableContent(this, index);
+              });
+              list.appendChild(listItem);
+            });
+            // createExpandableContent(cleanedResponses)
+        })
+        .catch((error) => {
+            document.getElementById('responseDisplay').textContent = 'Error fetching response';
+        });
+    });
+
+
+    function toggleExpandableContent(listItem, index) {
+      let expandableContent = listItem.nextElementSibling;
+      if (!expandableContent || !expandableContent.classList.contains('expandable-content')) {
+          // If it doesn't exist, create it
+          expandableContent = document.createElement('div');
+          createExpandableContent(expandableContent, listItem, index);
+          listItem.parentNode.insertBefore(expandableContent, listItem.nextSibling);
+      }
+      // Toggle display
+      expandableContent.style.display = expandableContent.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function createExpandableContent(expandableContent, listItem, index) {
+      expandableContent.className = 'expandable-content';
+
+      // Rubric generation
+      const fetchButton = document.createElement('button');
+      fetchButton.textContent = 'Generate Rubric';
+      fetchButton.onclick = function() {
+        console.log("Inside Generate rubric --------------")
+        const textArea = document.createElement('textarea');
+        textArea.id = "text-area-" + index
+        textArea.value = "Generating rubric ..."
+        generateAndSetRubric(listItem, textArea);
+        if (!expandableContent.contains(textArea)) {
+            expandableContent.appendChild(textArea);
+        }
+
+        // Grading part
+        const answerTextArea = document.createElement('textarea');
+        answerTextArea.value = "Enter Student's Answer ..."
+        expandableContent.appendChild(answerTextArea);
+        // Grading button
+        const gradeButton = document.createElement('button');
+        gradeButton.textContent = 'Grade Answer and Get Feedback';
+        gradeButton.onclick = function() {
+          console.log("Ready to grade answer --------------")
+          // Simulate fetching data and displaying in textarea
+          generateGradeBlock(expandableContent, listItem, index, textArea, answerTextArea)
+        };
+        expandableContent.appendChild(gradeButton);
+      };
+      expandableContent.appendChild(fetchButton)
+    }
+
+    function generateAndSetRubric(listItem, textArea) {
+      var inputText = listItem.value;
+      console.log("valueeeeee---------")
+      console.log(inputText)
+      inputText = "System: Act as a Professor of a University. Only give the response without any header text. " +
+      "Generate a rubric for grading for this question. The rubric should have elements of Argument Development," + 
+      " Evidence and Examples, Contextual Understanding. Give a break down of how many marks to be awarded for each answer type. " + 
+      "Maximum marks are 10, minimum are 0. Provide an ideal answer that gets 10 marks, and an answer that gets " + 
+      " 1 mark. Prompt:" + inputText
+      var response;
+      // Example fetch request (adjust URL and request details as needed)
+      fetch('https://api.cohere.ai/v1/generate', {
+        method: 'POST', // or 'GET' if required by your endpoint
+        body: JSON.stringify({prompt: inputText}), // Adjust based on your endpoint's requirements
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer NpP2ZAFKfb793OTLHQZyQESLvtwXTrgGJkbgxxlp',
+        },
+        max_tokens:500,
+        temperature:0.5,
+        k:40,
+        p:0.95,
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("rubric generated")
+        console.log(data["generations"][0]["text"])
+        textArea.value = data["generations"][0]["text"];
+      })
+      .catch((error) => {
+        textArea.value = "Something went wrong";
+      })
+    }
+
+    function generateGradeBlock(expandableContent, listItem, index, rubricTextArea, answerTextArea) {
+      const gradeAndFeedbackTextArea = document.createElement('textarea');
+      gradeAndFeedbackTextArea.value = "Grades and Feedback appears here ..."
+
+      console.log("The rubric is ...");
+      console.log(rubricTextArea.value);
+
+      gradeAnswerAndProvideFeedback(listItem, answerTextArea, rubricTextArea, gradeAndFeedbackTextArea);
+      expandableContent.appendChild(gradeAndFeedbackTextArea);
+    }
+
+    function gradeAnswerAndProvideFeedback(listItem, textArea, rubricTextArea, gradeAndFeedbackTextArea) {
+      const gradePrompt = "System: Grade the answer provided based on a rubric. Both rubric and answer will be given. Also" + 
+      " provide a bulleted feedback. The feedback should be detailed and should be based on the rubric. " + 
+      "The feedback should have two components: Where did the answer do well AND where can the answer improve. " + 
+      "Provide different sections for both analysis. Use emojis wherever possible. Don't give any header or footer text, " + 
+      "only provide the grade score and a detailed feedback. Rubric: " + rubricTextArea.value + ". Answer: " + textArea.value;
+      fetch('https://api.cohere.ai/v1/generate', {
+        method: 'POST', // or 'GET' if required by your endpoint
+        body: JSON.stringify({prompt: gradePrompt}), // Adjust based on your endpoint's requirements
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer NpP2ZAFKfb793OTLHQZyQESLvtwXTrgGJkbgxxlp',
+        },
+        max_tokens:500,
+        temperature:0.5,
+        k:40,
+        p:0.95,
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log("feedback generated ....")
+        console.log(data["generations"][0]["text"])
+        gradeAndFeedbackTextArea.value = data["generations"][0]["text"];
+      })
+      .catch((error) => {
+        gradeAndFeedbackTextArea.value = "Something went wrong" + error;
+      })      
+    }
+
+</script>
+
+</body>
+</html>

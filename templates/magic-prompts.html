@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Page</title>
+    <!-- <link rel="stylesheet" href="/templates/magic/magic.css"> -->
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    margin-top: 20px;
+    padding: 15px;
+    font-size: 16px;
+    border: 2px solid #007BFF;
+    border-radius: 8px;
+}
+
+.tabs {
+    margin-top: 20px;
+}
+
+.tab-links {
+    overflow: hidden;
+    background-color: #f1f1f1;
+    padding: 0;
+    margin: 0;
+}
+
+.tab-link {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: background-color 0.3s;
+}
+
+.tab-link:hover {
+    background-color: #ddd;
+}
+
+.tab-link.active {
+    background-color: #007BFF;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.chip {
+    display: inline-block;
+    padding: 8px;
+    background-color: #f1f1f1;
+    border-radius: 25px;
+    margin: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.chip:hover {
+    background-color: #ddd;
+}
+
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}
+
+    </style>
+</head>
+<body>
+
+<section id="section1">
+    <textarea placeholder="Type something..."></textarea>
+</section>
+
+<section id="section2">
+    <div class="tabs">
+        <div class="tab-links">
+            <button class="tab-link active" onclick="openTab(event, 'tab1')">Tab 1</button>
+            <button class="tab-link" onclick="openTab(event, 'tab2')">Tab 2</button>
+            <!-- Add more buttons for each tab -->
+        </div>
+        <div id="tab1" class="tab-content active">
+            <!-- Add your multi-select chips here -->
+            <span class="chip">Option 1</span>
+            <!-- Repeat for other options -->
+        </div>
+        <!-- Add more divs for each tab's content -->
+    </div>
+</section>
+
+<section id="section3">
+    <button class="submit-btn">Submit</button>
+</section>
+
+<section id="section4">
+    <textarea placeholder="Type something..."></textarea>
+</section>
+
+<script>
+    function openTab(evt, tabName) {
+        console.log("hello magic -----------------------------------------")
+        // Declare all variables
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tab-content" and hide them
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tab-link" and remove the class "active"
+        tablinks = document.getElementsByClassName("tab-link");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Default open first tab
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("tab1").style.display = "block";
+    });
+</script>
+</body>
+</html>
