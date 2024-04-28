@@ -17,7 +17,7 @@ document.getElementById('submitButton').addEventListener('click', function() {
       body: JSON.stringify({text: inputText}), // Adjust based on your endpoint's requirements
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer NpP2ZAFKfb793OTLHQZyQESLvtwXTrgGJkbgxxlp',
+        Authorization: 'Bearer <Your Key>',
       },
       max_tokens:500,
       temperature:0.5,
@@ -45,7 +45,7 @@ button.addEventListener('click', async _ => {
       body: text.value,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer NpP2ZAFKfb793OTLHQZyQESLvtwXTrgGJkbgxxlp',
+        Authorization: 'Bearer <Your Key>',
       },
       max_tokens:500,
       temperature:0.5,
@@ -71,7 +71,7 @@ form.addEventListener("submit", (event) => {
     body: data,
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer NpP2ZAFKfb793OTLHQZyQESLvtwXTrgGJkbgxxlp",
+      Authorization: "Bearer <Your Key>",
     },
     max_tokens:500,
     temperature:0.5,
